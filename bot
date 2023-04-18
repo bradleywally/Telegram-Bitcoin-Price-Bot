@@ -1,0 +1,28 @@
+
+```python
+import requests
+from telegram.ext import Updater, CommandHandler
+
+# Define a function to handle the /start command
+def start(update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Hi! I'm a Bitcoin price bot. Send me the /price command to get the current price of Bitcoin.")
+
+# Define a function to handle the /price command
+def price(update, context):
+    # Get the current Bitcoin price from the Coindesk API
+    response = requests.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+    data = response.json()
+    price_usd = data['bpi']['USD']['rate']
+    # Send the current Bitcoin price to the user
+    context.bot.send_message(chat_id=update.effective_chat.id, text=f"The current Bitcoin price is {price_usd} USD.")
+
+# Create a Telegram bot and add the command handlers
+updater = Updater(token='6204205194:AAGSmUIFWtnvlD6O9tapl2IRdLJkY8X7Zxw
+', use_context=True)
+dispatcher = updater.dispatcher
+dispatcher.add_handler(CommandHandler('start', start))
+dispatcher.add_handler(CommandHandler('price', price))
+
+# Start the bot
+updater.start_polling()
+```
